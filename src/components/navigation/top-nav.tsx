@@ -16,6 +16,8 @@ import {Separator} from "@/components/ui/separator.tsx";
 import {useTheme} from "@/components/theme-provider.tsx";
 import {Badge} from "@/components/ui/badge.tsx";
 import {useNavigationStore} from "@/store/store.ts";
+import {useAuth} from "@/hooks/useAuth.ts";
+import {useNavigate} from "@tanstack/react-router";
 
 const TopNav = () => {
     const {isMenuOpen, setNotificationOpen, setMenuOpen} = useNavigationStore(state => ({
@@ -23,7 +25,14 @@ const TopNav = () => {
         setNotificationOpen: state.setIsNotificationOpen,
         setMenuOpen: state.setIsSideNavOpen
     }))
+    const {logout} = useAuth();
+    const navigate = useNavigate()
     const {setTheme} = useTheme()
+
+    const handleLogout = () => {
+        logout()
+        navigate({to: '/login'})
+    }
 
     return (
         <>
@@ -106,7 +115,12 @@ const TopNav = () => {
                                         </Tooltip>
                                     </div>
                                     <DropdownMenuSeparator/>
-                                    <Button variant="ghost" className="flex gap-4 w-full" size="icon">
+                                    <Button
+                                        variant="ghost"
+                                        className="flex gap-4 w-full"
+                                        size="icon"
+                                        onClick={handleLogout}
+                                    >
                                         <span>Keluar</span>
                                         <LogOut/>
                                     </Button>

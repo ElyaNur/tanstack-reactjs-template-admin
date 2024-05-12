@@ -1,9 +1,8 @@
-import {useMutation, useQuery} from "@tanstack/react-query";
+import {useMutation} from "@tanstack/react-query";
 import axios, {AxiosError} from "axios";
 import {API_URL} from "@/common/constant.ts";
-import {Error, useAuthStore} from "@/store/store.ts";
-import {useEffect, useState} from "react";
-import {redirect} from "@tanstack/react-router";
+import {Error, useAuthStore, useNavigationStore} from "@/store/store.ts";
+import {useState} from "react";
 
 
 export const useAuth = () => {
@@ -27,6 +26,8 @@ export const useAuth = () => {
         accessToken: state.accessToken,
     }))
 
+    const setIsLoading = useNavigationStore(state => state.setIsLoading)
+
     const [error, setError] = useState<Error | null>(null)
 
     const {mutate: login, isPending} = useMutation({
@@ -36,52 +37,27 @@ export const useAuth = () => {
             setAccessToken(response.access_token)
             setRefreshToken(response.refresh_token)
             setIsLogged(true)
+            setIsLoading(true)
         },
         onError: (error: AxiosError) => {
             setError(error.response?.data as Error)
         }
     })
 
-    const {data, isLoading, error: userError} = useQuery({
-        queryKey: ['user'],
-        queryFn: () => axios.get(`${API_URL}/auth/user`, {
+    const {mutate: logout} = useMutation({
+        mutationFn: () => axios.get(`${API_URL}/auth/logout`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
         }),
-    })
-
-    const {mutate: getRefreshToken} = useMutation({
-        mutationFn: () => axios.get(`${API_URL}/auth/refresh`, {
-            headers: {
-                Authorization: `Bearer ${refreshToken}`
-            }
-        }),
-        onSuccess: (data) => {
-            const response = data.data;
-            setAccessToken(response.access_token)
-            setIsLogged(true)
-
-            throw redirect({to: '/dashboard'})
+        onSuccess: () => {
+            setAccessToken('')
+            setRefreshToken('')
+            setIsLogged(false)
+            setUser(null)
         },
     })
 
-    useEffect(() => {
-        if (data) {
-            setUser(data.data.data)
-        }
-    }, [data]);
-
-    useEffect(() => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        if (userError?.response.status === 401) {
-            setIsLogged(false)
-            setAccessToken('')
-            getRefreshToken()
-            setUser(null)
-        }
-    }, [userError]);
 
     return {
         error,
@@ -89,7 +65,9 @@ export const useAuth = () => {
         isLogged,
         isPending,
         login,
-        isLoading,
+        logout,
+        refreshToken,
+        accessToken,
     }
 }
 
@@ -99,5 +77,7 @@ export type AuthState = {
     error: Error | null
     login: (data: object) => void
     isPending: boolean
-    isLoading: boolean
+    logout: () => void
+    refreshToken: string | null
+    accessToken: string | null
 }

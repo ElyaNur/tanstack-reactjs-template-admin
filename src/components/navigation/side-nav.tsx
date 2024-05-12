@@ -1,22 +1,40 @@
 import {cn} from "@/lib/utils.ts";
 import {TooltipProvider} from "@/components/ui/tooltip.tsx";
-import {ArchiveX, CircleArrowLeft, CircleArrowRight, FileIcon, HeartPulse, Inbox, Send} from "lucide-react";
+import {CircleArrowLeft, CircleArrowRight, HeartPulse} from "lucide-react";
 import {Separator} from "@/components/ui/separator.tsx";
 import {Nav} from "@/components/navigation/nav.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {useNavigationStore} from "@/store/store.ts";
+import {MenuItem, useNavigationStore} from "@/store/store.ts";
+import {Link, useRouterState} from "@tanstack/react-router";
+import {useMemo} from "react";
 
 const SideNav = () => {
-    const {isCollapsed, setIsCollapsed} = useNavigationStore(state => ({
+    const {menus, isCollapsed, setIsCollapsed} = useNavigationStore(state => ({
+        menus: state.menus,
         isCollapsed: state.isSideNavOpen,
         setIsCollapsed: state.setIsSideNavOpen
     }))
+
+    const router = useRouterState()
+
+
+    const processedMenu = useMemo<MenuItem[]>(
+        () => menus.map(menu => ({
+            ...menu,
+            group: menu.group.map((group) => ({
+                ...group,
+                variant: router.location.pathname === group.path ? "default" : 'ghost'
+            }))
+        })), [menus])
+
+    console.log(processedMenu)
 
     return (
         <aside
             className={cn("lg:w-80 w-16 inset-y-0 start-0 z-30 sticky bg-primary-foreground h-svh hidden sm:block", isCollapsed && "max-w-16 block")}>
             <TooltipProvider delayDuration={0}>
-                <div
+                <Link
+                    to="/"
                     className={cn("flex h-16 items-center justify-center relative", isCollapsed && "px-2")}
                 >
                     <HeartPulse className={cn("h-6 w-6 text-primary hidden sm:block", isCollapsed && "block")}/>
@@ -29,36 +47,11 @@ const SideNav = () => {
                     >
                         {isCollapsed ? <CircleArrowRight/> : <CircleArrowLeft/>}
                     </Button>
-                </div>
+                </Link>
                 <Separator/>
                 <Nav
                     isCollapsed={isCollapsed}
-                    links={[
-                        {
-                            title: "Admin",
-                            icon: FileIcon,
-                            group: [
-                                {
-                                    title: "Dashboard",
-                                    label: "128",
-                                    icon: Inbox,
-                                    variant: "default",
-                                },
-                                {
-                                    title: "Users",
-                                    label: "",
-                                    icon: Send,
-                                    variant: "ghost",
-                                },
-                                {
-                                    title: "Settings",
-                                    label: "",
-                                    icon: ArchiveX,
-                                    variant: "ghost",
-                                },
-                            ]
-                        },
-                    ]}
+                    links={processedMenu}
                 />
 
                 <Separator/>

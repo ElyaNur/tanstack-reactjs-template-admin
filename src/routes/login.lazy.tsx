@@ -8,6 +8,7 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/
 import {useAuth} from "@/hooks/useAuth.ts";
 import {Loader2} from "lucide-react";
 import {useEffect} from "react";
+import {useNavigationStore} from "@/store/store.ts";
 
 
 export const Route = createLazyFileRoute('/login')({
@@ -26,6 +27,8 @@ const formSchema = z.object({
 
 
 function Login() {
+    const setIsLoading = useNavigationStore((state) => state.setIsLoading)
+    setIsLoading(false)
     const navigate = useNavigate()
 
     const {login, isPending, error, isLogged} = useAuth()

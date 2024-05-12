@@ -8,10 +8,10 @@ import App from "@/app.tsx";
 // Create a new router instance
 
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            retry: 1
+            retry: false,
         }
     }
 })

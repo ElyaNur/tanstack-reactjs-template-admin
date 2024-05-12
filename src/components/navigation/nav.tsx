@@ -1,24 +1,15 @@
 import {ChevronDown, LucideIcon} from "lucide-react"
-
 import {cn} from "@/lib/utils.ts"
 import {Button, buttonVariants} from "@/components/ui/button.tsx"
 import {Link} from "@tanstack/react-router";
 import {ReactNode, useState} from "react";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip.tsx";
+import {MenuItem} from "@/store/store.ts";
 
-interface NavProps {
+type NavProps = {
     isCollapsed: boolean
-    links: {
-        title?: string
-        icon: LucideIcon
-        group: {
-            title: string
-            label?: string
-            icon: LucideIcon
-            variant: "default" | "ghost"
-        }[]
-    }[],
+    links: MenuItem[]
 }
 
 export function Nav({links, isCollapsed}: NavProps) {
@@ -26,51 +17,23 @@ export function Nav({links, isCollapsed}: NavProps) {
         <nav
             data-collapsed={isCollapsed}
             className="group flex flex-col px-8 overflow-auto h-[93%]">
-            <ul className="-mx-2 lg:flex hidden flex-col gap-y-5 group-[[data-collapsed=true]]:gap-y-4 group-[[data-collapsed=true]]:items-center group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
-                {links.map((link, index) => isCollapsed ? (
-                        <NavGroupCollapse title={link.title} icon={link.icon} key={index}>
-                            {link.group.map((link, index) => (
-                                <li className="flex flex-col" key={index}>
-                                    <Link
-                                        href="#"
-                                        className={cn(
-                                            buttonVariants({variant: link.variant, size: "sm"}),
-                                            link.variant === "default" &&
-                                            "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
-                                            "justify-start"
-                                        )}
-                                    >
-                                        <link.icon className="mr-2 h-4 w-4"/>
-                                        {link.title}
-                                        {link.label && (
-                                            <span
-                                                className={cn(
-                                                    "ml-auto",
-                                                    link.variant === "default" &&
-                                                    "text-background dark:text-white"
-                                                )}
-                                            >
-                                                      {link.label}
-                                                    </span>
-                                        )}
-                                    </Link>
-                                </li>
-                            ))}
-                        </NavGroupCollapse>
+            <ul className="-mx-2 mt-4 lg:flex hidden flex-col gap-y-5 group-[[data-collapsed=true]]:gap-y-4 group-[[data-collapsed=true]]:items-center group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
+                {links.map((parent, index) => isCollapsed ? (
+                        <NavCollapse key={index} parent={parent}/>
                     ) : (
-                        <NavGroup title={link.title} icon={link.icon} key={index}>
-                            {link.group.map((link, index) => (
+                        <NavGroup title={parent.title} icon={parent.icon} key={index}>
+                            {parent.group.map((link, index) => (
                                 <li className="flex flex-col" key={index}>
                                     <Link
-                                        href="#"
+                                        to={link.path || "#"}
                                         className={cn(
-                                            buttonVariants({variant: link.variant, size: "sm"}),
+                                            buttonVariants({variant: link.variant,}),
                                             link.variant === "default" &&
                                             "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
                                             "justify-start"
                                         )}
                                     >
-                                        <link.icon className="mr-2 h-4 w-4"/>
+                                        <ChevronDown className="mr-2h-4 w-4"/>
                                         {link.title}
                                         {link.label && (
                                             <span
@@ -80,8 +43,8 @@ export function Nav({links, isCollapsed}: NavProps) {
                                                     "text-background dark:text-white"
                                                 )}
                                             >
-                                                      {link.label}
-                                                    </span>
+                                              {link.label}
+                                            </span>
                                         )}
                                     </Link>
                                 </li>
@@ -91,51 +54,18 @@ export function Nav({links, isCollapsed}: NavProps) {
                 )}
             </ul>
             <ul className="-mx-2 flex flex-col gap-y-4 items-center justify-center px-2 lg:hidden">
-                {links.map((link, index) => (
-                    <NavGroupCollapse title={link.title} icon={link.icon} key={index}>
-                        {link.group.map((link, index) => (
-                            <li className="flex flex-col" key={index}>
-                                <Link
-                                    href="#"
-                                    className={cn(
-                                        buttonVariants({variant: link.variant, size: "sm"}),
-                                        link.variant === "default" &&
-                                        "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
-                                        "justify-start"
-                                    )}
-                                >
-                                    <link.icon className="mr-2 h-4 w-4"/>
-                                    {link.title}
-                                    {link.label && (
-                                        <span
-                                            className={cn(
-                                                "ml-auto",
-                                                link.variant === "default" &&
-                                                "text-background dark:text-white"
-                                            )}
-                                        >
-                                          {link.label}
-                                        </span>
-                                    )}
-                                </Link>
-                            </li>
-                        ))}
-                    </NavGroupCollapse>
+                {links.map((parent, index) => (
+                    <NavCollapse key={index} parent={parent}/>
                 ))}
             </ul>
         </nav>
     )
 }
 
-const NavGroup = ({
-                      title, icon:
-        Icon, children
-                  }: {
-    title?: string, icon
-        :
-        LucideIcon, children
-        :
-        ReactNode
+const NavGroup = ({title, icon, children}: {
+    title?: string,
+    icon?: LucideIcon,
+    children: ReactNode
 }) => {
     const [isOpen, setIsOpen] = useState(true)
     return (
@@ -143,7 +73,7 @@ const NavGroup = ({
             {title && (
                 <div className="flex items-center gap-x-3 px-2 py-2 cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
                     <span className="flex-1 font-semibold flex gap-2">
-                        <Icon className="h-6 w-6"/>
+                        {icon && <ChevronDown className="h-6 w-6"/>}
                         {title}
                     </span>
                     <Button variant="ghost" size="icon">
@@ -161,7 +91,11 @@ const NavGroup = ({
     )
 }
 
-const NavGroupCollapse = ({title, icon: Icon, children}: { title?: string, icon: LucideIcon, children: ReactNode }) => {
+const NavGroupCollapse = ({title, icon, children}: {
+    title?: string,
+    icon?: LucideIcon,
+    children: ReactNode
+}) => {
     return (
         <li className="flex flex-col gap-y-1">
             {title ? (
@@ -170,7 +104,7 @@ const NavGroupCollapse = ({title, icon: Icon, children}: { title?: string, icon:
                         <TooltipTrigger asChild>
                             <PopoverTrigger asChild>
                                 <Button variant="ghost" size="icon">
-                                    <Icon className="h-4 w-4"/>
+                                    {icon && <ChevronDown className="h-4 w-4"/>}
                                 </Button>
                             </PopoverTrigger>
                         </TooltipTrigger>
@@ -184,7 +118,68 @@ const NavGroupCollapse = ({title, icon: Icon, children}: { title?: string, icon:
                         </ul>
                     </PopoverContent>
                 </Popover>
-            ) : <ul className="flex flex-col gap-y-1">children</ul>}
+            ) : (
+                <ul className="flex flex-col gap-y-1">
+                    {children}
+                </ul>
+            )}
         </li>
+    )
+}
+
+type NavCollapseProps = {
+    title?: string
+    icon?: LucideIcon
+    group: {
+        title: string
+        label?: string
+        icon: LucideIcon
+        variant: "default" | "ghost"
+        path?: string
+    }[]
+}
+
+const NavCollapse = ({parent}: { parent: NavCollapseProps }) => {
+    return (
+        <NavGroupCollapse title={parent.title} icon={parent.icon}>
+            {parent.group.map((link, index) => parent.title ? (
+                <li className="flex flex-col" key={index}>
+                    <Link
+                        to={link.path || "#"}
+                        className={cn(
+                            buttonVariants({variant: link.variant, size: "sm"}),
+                            link.variant === "default" &&
+                            "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
+                            "justify-start"
+                        )}
+                    >
+                        <ChevronDown className="mr-2 h-4 w-4"/>
+                        {link.title}
+                        {link.label && (
+                            <span
+                                className={cn(
+                                    "ml-auto",
+                                    link.variant === "default" &&
+                                    "text-background dark:text-white"
+                                )}
+                            >
+                              {link.label}
+                            </span>
+                        )}
+                    </Link>
+                </li>
+            ) : (
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                            <ChevronDown className="h-4 w-4"/>
+                        </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right">
+                        {link.title}
+                    </TooltipContent>
+                </Tooltip>
+            ))}
+        </NavGroupCollapse>
     )
 }

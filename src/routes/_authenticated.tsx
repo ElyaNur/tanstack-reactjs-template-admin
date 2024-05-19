@@ -2,7 +2,10 @@ import {createFileRoute, Outlet, redirect} from '@tanstack/react-router'
 import Navigation from "@/components/navigation/navigation.tsx";
 import Drawer from "@/components/drawer/drawer.tsx";
 import {useAuthStore, useNavigationStore} from "@/store/store.ts";
-import {fetchMenuTree, fetchUserData} from "@/apis/auth/login.ts";
+import {fetchMenuTree, fetchUserData, menuTreeQueryOptions, userQueryOptions} from "@/apis/auth/login.ts";
+import {useEffect} from "react";
+import {Toaster} from "@/components/ui/toaster.tsx";
+import {useSuspenseQueries} from "@tanstack/react-query";
 
 export const Route = createFileRoute('/_authenticated')({
     beforeLoad: ({context}) => {
@@ -26,14 +29,25 @@ function AuthenticatedLayout() {
     const setIsLoading = useNavigationStore(state => state.setIsLoading);
     const setMenus = useNavigationStore(state => state.setMenus);
     const setUser = useAuthStore(state => state.setUser);
-    const data = Route.useLoaderData();
 
-    setMenus(data.menu.data);
-    setUser(data.user.data);
-    setIsLoading(false);
 
-    return <Navigation>
-        <Drawer/>
-        <Outlet/>
-    </Navigation>
+    const [{data: user}, {data: menuTrees}] = useSuspenseQueries({
+        queries: [userQueryOptions, menuTreeQueryOptions],
+    })
+
+    useEffect(() => {
+        setMenus(menuTrees.data);
+        setUser(user.data);
+        setIsLoading(false);
+    }, [menuTrees, user]);
+
+    return (
+        <>
+            <Navigation>
+                <Drawer/>
+                <Outlet/>
+            </Navigation>
+            <Toaster/>
+        </>
+    )
 }

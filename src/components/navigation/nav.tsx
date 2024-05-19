@@ -1,4 +1,4 @@
-import {ChevronDown, LucideIcon} from "lucide-react"
+import {ChevronDown} from "lucide-react"
 import {cn} from "@/lib/utils.ts"
 import {Button, buttonVariants} from "@/components/ui/button.tsx"
 import {Link} from "@tanstack/react-router";
@@ -6,6 +6,8 @@ import {ReactNode, useState} from "react";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip.tsx";
 import {MenuItem} from "@/store/store.ts";
+import dynamicIconImports from "lucide-react/dynamicIconImports";
+import Icon from "@/components/icon.tsx";
 
 type NavProps = {
     isCollapsed: boolean
@@ -30,10 +32,11 @@ export function Nav({links, isCollapsed}: NavProps) {
                                             buttonVariants({variant: link.variant,}),
                                             link.variant === "default" &&
                                             "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
-                                            "justify-start"
+                                            "justify-start items-center gap-2",
+                                            !parent.title && "font-bold text-md px-2"
                                         )}
                                     >
-                                        <ChevronDown className="mr-2h-4 w-4"/>
+                                        <Icon className={cn("mr-2 h-4 w-4", !parent.title && "h-6 w-6")} name={link.icon}/>
                                         {link.title}
                                         {link.label && (
                                             <span
@@ -64,7 +67,7 @@ export function Nav({links, isCollapsed}: NavProps) {
 
 const NavGroup = ({title, icon, children}: {
     title?: string,
-    icon?: LucideIcon,
+    icon?: keyof typeof dynamicIconImports,
     children: ReactNode
 }) => {
     const [isOpen, setIsOpen] = useState(true)
@@ -73,7 +76,7 @@ const NavGroup = ({title, icon, children}: {
             {title && (
                 <div className="flex items-center gap-x-3 px-2 py-2 cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
                     <span className="flex-1 font-semibold flex gap-2">
-                        {icon && <ChevronDown className="h-6 w-6"/>}
+                        {icon && <Icon name={icon} className="h-6 w-6"/>}
                         {title}
                     </span>
                     <Button variant="ghost" size="icon">
@@ -93,7 +96,7 @@ const NavGroup = ({title, icon, children}: {
 
 const NavGroupCollapse = ({title, icon, children}: {
     title?: string,
-    icon?: LucideIcon,
+    icon?: keyof typeof dynamicIconImports,
     children: ReactNode
 }) => {
     return (
@@ -104,7 +107,7 @@ const NavGroupCollapse = ({title, icon, children}: {
                         <TooltipTrigger asChild>
                             <PopoverTrigger asChild>
                                 <Button variant="ghost" size="icon">
-                                    {icon && <ChevronDown className="h-4 w-4"/>}
+                                    {icon && <Icon name={icon} className="h-4 w-4"/>}
                                 </Button>
                             </PopoverTrigger>
                         </TooltipTrigger>
@@ -129,11 +132,11 @@ const NavGroupCollapse = ({title, icon, children}: {
 
 type NavCollapseProps = {
     title?: string
-    icon?: LucideIcon
+    icon?: keyof typeof dynamicIconImports
     group: {
         title: string
         label?: string
-        icon: LucideIcon
+        icon: keyof typeof dynamicIconImports
         variant: "default" | "ghost"
         path?: string
     }[]
@@ -150,10 +153,10 @@ const NavCollapse = ({parent}: { parent: NavCollapseProps }) => {
                             buttonVariants({variant: link.variant, size: "sm"}),
                             link.variant === "default" &&
                             "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
-                            "justify-start"
+                            "justify-start items-center"
                         )}
                     >
-                        <ChevronDown className="mr-2 h-4 w-4"/>
+                        <Icon name={link.icon} className="mr-2 h-4 w-4"/>
                         {link.title}
                         {link.label && (
                             <span

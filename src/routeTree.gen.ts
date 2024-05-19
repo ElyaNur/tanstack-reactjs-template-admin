@@ -20,7 +20,54 @@ import { Route as AuthenticatedDashboardImport } from './routes/_authenticated/d
 // Create Virtual Routes
 
 const LoginLazyImport = createFileRoute('/login')()
-const AuthenticatedMenusLazyImport = createFileRoute('/_authenticated/menus')()
+const AuthenticatedUsersIndexLazyImport = createFileRoute(
+  '/_authenticated/users/',
+)()
+const AuthenticatedRolesIndexLazyImport = createFileRoute(
+  '/_authenticated/roles/',
+)()
+const AuthenticatedPermissionsIndexLazyImport = createFileRoute(
+  '/_authenticated/permissions/',
+)()
+const AuthenticatedMenusIndexLazyImport = createFileRoute(
+  '/_authenticated/menus/',
+)()
+const AuthenticatedUsersTambahLazyImport = createFileRoute(
+  '/_authenticated/users/tambah',
+)()
+const AuthenticatedRolesTambahLazyImport = createFileRoute(
+  '/_authenticated/roles/tambah',
+)()
+const AuthenticatedPermissionsTambahLazyImport = createFileRoute(
+  '/_authenticated/permissions/tambah',
+)()
+const AuthenticatedMenusTambahLazyImport = createFileRoute(
+  '/_authenticated/menus/tambah',
+)()
+const AuthenticatedUsersUserIdIndexLazyImport = createFileRoute(
+  '/_authenticated/users/$userId/',
+)()
+const AuthenticatedRolesRoleIdIndexLazyImport = createFileRoute(
+  '/_authenticated/roles/$roleId/',
+)()
+const AuthenticatedPermissionsPermissionIdIndexLazyImport = createFileRoute(
+  '/_authenticated/permissions/$permissionId/',
+)()
+const AuthenticatedMenusMenuIdIndexLazyImport = createFileRoute(
+  '/_authenticated/menus/$menuId/',
+)()
+const AuthenticatedUsersUserIdEditLazyImport = createFileRoute(
+  '/_authenticated/users/$userId/edit',
+)()
+const AuthenticatedRolesRoleIdEditLazyImport = createFileRoute(
+  '/_authenticated/roles/$roleId/edit',
+)()
+const AuthenticatedPermissionsPermissionIdEditLazyImport = createFileRoute(
+  '/_authenticated/permissions/$permissionId/edit',
+)()
+const AuthenticatedMenusMenuIdEditLazyImport = createFileRoute(
+  '/_authenticated/menus/$menuId/edit',
+)()
 
 // Create/Update Routes
 
@@ -39,17 +86,158 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthenticatedMenusLazyRoute = AuthenticatedMenusLazyImport.update({
-  path: '/menus',
-  getParentRoute: () => AuthenticatedRoute,
-} as any).lazy(() =>
-  import('./routes/_authenticated/menus.lazy').then((d) => d.Route),
-)
-
 const AuthenticatedDashboardRoute = AuthenticatedDashboardImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+
+const AuthenticatedUsersIndexLazyRoute =
+  AuthenticatedUsersIndexLazyImport.update({
+    path: '/users/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/users/index.lazy').then((d) => d.Route),
+  )
+
+const AuthenticatedRolesIndexLazyRoute =
+  AuthenticatedRolesIndexLazyImport.update({
+    path: '/roles/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/roles/index.lazy').then((d) => d.Route),
+  )
+
+const AuthenticatedPermissionsIndexLazyRoute =
+  AuthenticatedPermissionsIndexLazyImport.update({
+    path: '/permissions/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/permissions/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AuthenticatedMenusIndexLazyRoute =
+  AuthenticatedMenusIndexLazyImport.update({
+    path: '/menus/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/menus/index.lazy').then((d) => d.Route),
+  )
+
+const AuthenticatedUsersTambahLazyRoute =
+  AuthenticatedUsersTambahLazyImport.update({
+    path: '/users/tambah',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/users/tambah.lazy').then((d) => d.Route),
+  )
+
+const AuthenticatedRolesTambahLazyRoute =
+  AuthenticatedRolesTambahLazyImport.update({
+    path: '/roles/tambah',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/roles/tambah.lazy').then((d) => d.Route),
+  )
+
+const AuthenticatedPermissionsTambahLazyRoute =
+  AuthenticatedPermissionsTambahLazyImport.update({
+    path: '/permissions/tambah',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/permissions/tambah.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AuthenticatedMenusTambahLazyRoute =
+  AuthenticatedMenusTambahLazyImport.update({
+    path: '/menus/tambah',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/menus/tambah.lazy').then((d) => d.Route),
+  )
+
+const AuthenticatedUsersUserIdIndexLazyRoute =
+  AuthenticatedUsersUserIdIndexLazyImport.update({
+    path: '/users/$userId/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/users/$userId/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AuthenticatedRolesRoleIdIndexLazyRoute =
+  AuthenticatedRolesRoleIdIndexLazyImport.update({
+    path: '/roles/$roleId/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/roles/$roleId/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AuthenticatedPermissionsPermissionIdIndexLazyRoute =
+  AuthenticatedPermissionsPermissionIdIndexLazyImport.update({
+    path: '/permissions/$permissionId/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/permissions/$permissionId/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AuthenticatedMenusMenuIdIndexLazyRoute =
+  AuthenticatedMenusMenuIdIndexLazyImport.update({
+    path: '/menus/$menuId/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/menus/$menuId/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AuthenticatedUsersUserIdEditLazyRoute =
+  AuthenticatedUsersUserIdEditLazyImport.update({
+    path: '/users/$userId/edit',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/users/$userId/edit.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AuthenticatedRolesRoleIdEditLazyRoute =
+  AuthenticatedRolesRoleIdEditLazyImport.update({
+    path: '/roles/$roleId/edit',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/roles/$roleId/edit.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AuthenticatedPermissionsPermissionIdEditLazyRoute =
+  AuthenticatedPermissionsPermissionIdEditLazyImport.update({
+    path: '/permissions/$permissionId/edit',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/permissions/$permissionId/edit.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AuthenticatedMenusMenuIdEditLazyRoute =
+  AuthenticatedMenusMenuIdEditLazyImport.update({
+    path: '/menus/$menuId/edit',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/menus/$menuId/edit.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 // Populate the FileRoutesByPath interface
 
@@ -71,8 +259,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardImport
       parentRoute: typeof AuthenticatedImport
     }
-    '/_authenticated/menus': {
-      preLoaderRoute: typeof AuthenticatedMenusLazyImport
+    '/_authenticated/menus/tambah': {
+      preLoaderRoute: typeof AuthenticatedMenusTambahLazyImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/permissions/tambah': {
+      preLoaderRoute: typeof AuthenticatedPermissionsTambahLazyImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/roles/tambah': {
+      preLoaderRoute: typeof AuthenticatedRolesTambahLazyImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/users/tambah': {
+      preLoaderRoute: typeof AuthenticatedUsersTambahLazyImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/menus/': {
+      preLoaderRoute: typeof AuthenticatedMenusIndexLazyImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/permissions/': {
+      preLoaderRoute: typeof AuthenticatedPermissionsIndexLazyImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/roles/': {
+      preLoaderRoute: typeof AuthenticatedRolesIndexLazyImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/users/': {
+      preLoaderRoute: typeof AuthenticatedUsersIndexLazyImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/menus/$menuId/edit': {
+      preLoaderRoute: typeof AuthenticatedMenusMenuIdEditLazyImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/permissions/$permissionId/edit': {
+      preLoaderRoute: typeof AuthenticatedPermissionsPermissionIdEditLazyImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/roles/$roleId/edit': {
+      preLoaderRoute: typeof AuthenticatedRolesRoleIdEditLazyImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/users/$userId/edit': {
+      preLoaderRoute: typeof AuthenticatedUsersUserIdEditLazyImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/menus/$menuId/': {
+      preLoaderRoute: typeof AuthenticatedMenusMenuIdIndexLazyImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/permissions/$permissionId/': {
+      preLoaderRoute: typeof AuthenticatedPermissionsPermissionIdIndexLazyImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/roles/$roleId/': {
+      preLoaderRoute: typeof AuthenticatedRolesRoleIdIndexLazyImport
+      parentRoute: typeof AuthenticatedImport
+    }
+    '/_authenticated/users/$userId/': {
+      preLoaderRoute: typeof AuthenticatedUsersUserIdIndexLazyImport
       parentRoute: typeof AuthenticatedImport
     }
   }
@@ -84,7 +332,22 @@ export const routeTree = rootRoute.addChildren([
   IndexRoute,
   AuthenticatedRoute.addChildren([
     AuthenticatedDashboardRoute,
-    AuthenticatedMenusLazyRoute,
+    AuthenticatedMenusTambahLazyRoute,
+    AuthenticatedPermissionsTambahLazyRoute,
+    AuthenticatedRolesTambahLazyRoute,
+    AuthenticatedUsersTambahLazyRoute,
+    AuthenticatedMenusIndexLazyRoute,
+    AuthenticatedPermissionsIndexLazyRoute,
+    AuthenticatedRolesIndexLazyRoute,
+    AuthenticatedUsersIndexLazyRoute,
+    AuthenticatedMenusMenuIdEditLazyRoute,
+    AuthenticatedPermissionsPermissionIdEditLazyRoute,
+    AuthenticatedRolesRoleIdEditLazyRoute,
+    AuthenticatedUsersUserIdEditLazyRoute,
+    AuthenticatedMenusMenuIdIndexLazyRoute,
+    AuthenticatedPermissionsPermissionIdIndexLazyRoute,
+    AuthenticatedRolesRoleIdIndexLazyRoute,
+    AuthenticatedUsersUserIdIndexLazyRoute,
   ]),
   LoginLazyRoute,
 ])

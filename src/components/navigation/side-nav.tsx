@@ -17,7 +17,6 @@ const SideNav = () => {
 
     const router = useRouterState()
 
-
     const processedMenu = useMemo<MenuItem[]>(
         () => menus.map(menu => ({
             ...menu,
@@ -25,9 +24,7 @@ const SideNav = () => {
                 ...group,
                 variant: router.location.pathname === group.path ? "default" : 'ghost'
             }))
-        })), [menus])
-
-    console.log(processedMenu)
+        })), [menus, router.location.pathname])
 
     return (
         <aside

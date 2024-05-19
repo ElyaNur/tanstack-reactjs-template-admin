@@ -28,7 +28,6 @@ const formSchema = z.object({
 
 function Login() {
     const setIsLoading = useNavigationStore((state) => state.setIsLoading)
-    setIsLoading(false)
     const navigate = useNavigate()
 
     const {login, isPending, error, isLogged} = useAuth()
@@ -41,6 +40,8 @@ function Login() {
     })
 
     useEffect(() => {
+        setIsLoading(false)
+        
         if (isLogged) {
             navigate({to: '/dashboard'})
         }

@@ -1,6 +1,6 @@
 import {create} from "zustand";
 import {persist} from "zustand/middleware";
-import {LucideIcon} from "lucide-react";
+import dynamicIconImports from "lucide-react/dynamicIconImports";
 
 export interface Error {
     message: string
@@ -51,7 +51,7 @@ type GroupItem = {
     group: GroupItem[]
     id: number;
     title: string;
-    icon: LucideIcon;
+    icon: keyof typeof dynamicIconImports;
     path?: string;
     label?: string;
     variant: "default" | "ghost";
@@ -60,7 +60,7 @@ type GroupItem = {
 export type MenuItem = {
     id: number;
     title?: string;
-    icon?: LucideIcon;
+    icon?: keyof typeof dynamicIconImports;
     group: GroupItem[];
 }
 
